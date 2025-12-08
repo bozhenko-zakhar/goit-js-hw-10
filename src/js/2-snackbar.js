@@ -44,18 +44,25 @@ snackBarForm.addEventListener("submit", e => {
 
 function makeSnackBarPromise(options) {
 	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			if (options.state === "fulfilled") {
+
+		if (options.state === "fulfilled") {
+			setTimeout(() => {
 				resolve({...toastOptions,
 					message: `✅ Fulfilled promise in ${options.delay}ms`,
 					backgroundColor: "#59A10D",
 				})
+		}, options.delay)
 			} else {
-				reject({...toastOptions,
-					message: `❌ Rejected promise in ${options.delay}ms`,
-					backgroundColor: "#EF4040",
-				})
+				setTimeout(() => {
+					reject({...toastOptions,
+						message: `❌ Rejected promise in ${options.delay}ms`,
+						backgroundColor: "#EF4040",
+					})
+				}, options.delay)
 			}
+		
+		setTimeout(() => {
+			
 		}, options.delay)
 	})
 }
