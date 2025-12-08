@@ -60,9 +60,5 @@ function makeSnackBarPromise(options) {
 					})
 				}, options.delay)
 			}
-		
-		setTimeout(() => {
-			
-		}, options.delay)
 	})
 }
