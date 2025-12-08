@@ -1,0 +1,16 @@
+.form {
+	display: flex;
+	flex-direction: column;
+	width: 225px;
+}
+
+.form > label {
+	display: flex;
+	flex-direction: column;
+}
+
+.form > fieldset {
+	display: flex;
+	gap: 20px;
+	margin: 10px 0 10px;
+}
