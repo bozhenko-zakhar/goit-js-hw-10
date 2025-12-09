@@ -5,9 +5,8 @@ import "izitoast/dist/css/iziToast.min.css";
 
 const snackBarForm = document.querySelector(".form");
 const dalayInput = snackBarForm.elements.delay;
-const promiseOptions = {
-	delay: 0, state: null
-};
+const fieldset = snackBarForm.querySelector("fieldset");
+
 const toastOptions = {
 	timeout: 3000,
 	messageColor: "white",
@@ -18,47 +17,46 @@ const toastOptions = {
 	icon: false,
 	transitionIn: "fadeIn",
 	animateInside: false
-}
-
-dalayInput.addEventListener("input", () => {
-	promiseOptions.delay = dalayInput.value;
-})
-
-snackBarForm.addEventListener("change", e => {
-	if (e.target.name !== "state") return
-
-	promiseOptions.state = e.target.value;
-})
+};
 
 snackBarForm.addEventListener("submit", e => {
 	e.preventDefault();
+	
+	const promiseOptions = {};
 
-	const promise = makeSnackBarPromise(promiseOptions);
+	for (const radio of fieldset.elements) {
+		if (radio.checked) {
+			promiseOptions.state = radio.value;
+			promiseOptions.delay = dalayInput.value;
+			snackBarForm.reset();
+			break
+		}
+	}
+
+	handleSnackBarPromise(promiseOptions);
+});
+	
+
+function handleSnackBarPromise(options) {
+	const promise = new Promise((resolve, reject) => {
+		setTimeout(() => {
+			if (options.state === "fulfilled") {
+				resolve(options.delay)
+			} else {
+				reject(options.delay)
+			}
+		}, options.delay);
+	});
 
 	promise.then(value => {
-		iziToast.success(value)
+		iziToast.success({...toastOptions,
+			message: `✅ Fulfilled promise in ${value}ms`,
+			backgroundColor: "#59A10D"
+		});
 	}).catch(error => {
-		iziToast.error(error)
-	})
-})
-
-function makeSnackBarPromise(options) {
-	return new Promise((resolve, reject) => {
-
-		if (options.state === "fulfilled") {
-			setTimeout(() => {
-				resolve({...toastOptions,
-					message: `✅ Fulfilled promise in ${options.delay}ms`,
-					backgroundColor: "#59A10D",
-				})
-		}, options.delay)
-			} else {
-				setTimeout(() => {
-					reject({...toastOptions,
-						message: `❌ Rejected promise in ${options.delay}ms`,
-						backgroundColor: "#EF4040",
-					})
-				}, options.delay)
-			}
-	})
+		iziToast.error({...toastOptions,
+			message: `❌ Rejected promise in ${error}ms`,
+			backgroundColor: "#EF4040"
+		});
+	});
 }
